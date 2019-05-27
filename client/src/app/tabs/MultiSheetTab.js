@@ -337,6 +337,14 @@ export class MultiSheetTab extends CachedComponent {
     }
   }
 
+  isUnsaved = (tab) => {
+    if (!tab) throw Error('WTF no tab?');
+
+    const { file } = tab;
+
+    return file && !file.path;
+  }
+
   render() {
     let {
       activeSheet,
@@ -350,7 +358,8 @@ export class MultiSheetTab extends CachedComponent {
       id,
       xml,
       layout,
-      onAction
+      onAction,
+      tab
     } = this.props;
 
     if (!sheets) {
@@ -363,6 +372,8 @@ export class MultiSheetTab extends CachedComponent {
 
     const Editor = activeSheet.provider.editor;
 
+    const isNew = this.isUnsaved(tab);
+
     return (
       <div className={ css.MultiSheetTab }>
         <TabContainer className="content tab">
@@ -370,6 +381,7 @@ export class MultiSheetTab extends CachedComponent {
             ref={ this.editorRef }
             id={ `${id}-${activeSheet.provider.type}` }
             xml={ lastXML || xml }
+            isNew={ isNew }
             layout={ layout }
             activeSheet={ activeSheet }
             onSheetsChanged={ this.sheetsChanged }
